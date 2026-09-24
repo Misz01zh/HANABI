@@ -1,0 +1,3 @@
+const films = [{ title: "花火：序章", access: "会员或单片购买", price: "¥18" }, { title: "午夜航线", access: "会员专享", price: "会员可看" }, { title: "云端回声", access: "免费试看", price: "试看 10 分钟" }];
+
+export default function Home() { return <main style={{ maxWidth: 960, margin: "0 auto", padding: 32, fontFamily: "system-ui" }}><header><h1>HANABI</h1><p>商城与正版影视点播平台</p></header><h2>正在热播</h2><div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))", gap: 16 }}>{films.map((film) => <article key={film.title} style={{ border: "1px solid #ddd", borderRadius: 12, padding: 18 }}><h3>{film.title}</h3><p>{film.access}</p><strong>{film.price}</strong><br /><button>查看影片</button></article>)}</div></main>; }
