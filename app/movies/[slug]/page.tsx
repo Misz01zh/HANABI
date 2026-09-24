@@ -2,11 +2,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AddToCartButton } from "@/components/add-to-cart-button";
 import { formatCny } from "@/lib/cart";
-import { getCatalogMovie } from "@/lib/catalog";
+import { getStorefrontMovie } from "@/lib/movies";
 
 export default async function MovieDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const movie = getCatalogMovie(slug);
+  const movie = await getStorefrontMovie(slug);
   if (!movie) notFound();
 
   return (
