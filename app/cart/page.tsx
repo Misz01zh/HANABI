@@ -11,8 +11,8 @@ export default function CartPage() {
 
   const total = items.reduce((sum, item) => sum + item.priceCents * item.quantity, 0);
 
-  function removeItem(slug: string) {
-    setItems(removeFromCart(slug));
+  function removeItem(id: string) {
+    setItems(removeFromCart(id));
   }
 
   return (
@@ -25,9 +25,9 @@ export default function CartPage() {
         <>
           <ul>
             {items.map((item) => (
-              <li key={item.slug}>
+              <li key={item.id}>
                 {item.title} · {formatCny(item.priceCents)}
-                <button type="button" onClick={() => removeItem(item.slug)}>移除</button>
+                <button type="button" onClick={() => removeItem(item.id)}>移除</button>
               </li>
             ))}
           </ul>
