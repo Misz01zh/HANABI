@@ -1,6 +1,6 @@
-import type { CatalogMovie } from "@/lib/catalog";
+import type { StorefrontMovie } from "@/lib/movies";
 
-export type CartItem = Pick<CatalogMovie, "slug" | "title" | "priceCents"> & {
+export type CartItem = Pick<StorefrontMovie, "id" | "title" | "priceCents"> & {
   quantity: number;
 };
 
@@ -12,7 +12,7 @@ export function getCart(): CartItem[] {
   try {
     const value = window.localStorage.getItem(CART_STORAGE_KEY);
     const cart = value ? JSON.parse(value) : [];
-    return Array.isArray(cart) ? cart : [];
+    return Array.isArray(cart) ? cart.filter((item) => typeof item?.id === "string") : [];
   } catch {
     return [];
   }
@@ -22,21 +22,21 @@ export function saveCart(items: CartItem[]) {
   window.localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
 }
 
-export function addMovieToCart(movie: CatalogMovie) {
+export function addMovieToCart(movie: StorefrontMovie) {
   if (movie.priceCents <= 0) return getCart();
 
   const cart = getCart();
-  const existing = cart.find((item) => item.slug === movie.slug);
+  const existing = cart.find((item) => item.id === movie.id);
   const next = existing
-    ? cart.map((item) => item.slug === movie.slug ? { ...item, quantity: 1 } : item)
-    : [...cart, { slug: movie.slug, title: movie.title, priceCents: movie.priceCents, quantity: 1 }];
+    ? cart.map((item) => item.id === movie.id ? { ...item, quantity: 1 } : item)
+    : [...cart, { id: movie.id, title: movie.title, priceCents: movie.priceCents, quantity: 1 }];
 
   saveCart(next);
   return next;
 }
 
-export function removeFromCart(slug: string) {
-  const next = getCart().filter((item) => item.slug !== slug);
+export function removeFromCart(id: string) {
+  const next = getCart().filter((item) => item.id !== id);
   saveCart(next);
   return next;
 }
