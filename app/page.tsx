@@ -1,3 +1,26 @@
-const films = [{ title: "花火：序章", access: "会员或单片购买", price: "¥18" }, { title: "午夜航线", access: "会员专享", price: "会员可看" }, { title: "云端回声", access: "免费试看", price: "试看 10 分钟" }];
+import Link from "next/link";
+import { catalogMovies } from "@/lib/catalog";
+import { formatCny } from "@/lib/cart";
 
-export default function Home() { return <main style={{ maxWidth: 960, margin: "0 auto", padding: 32, fontFamily: "system-ui" }}><header><h1>HANABI</h1><p>商城与正版影视点播平台</p></header><h2>正在热播</h2><div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))", gap: 16 }}>{films.map((film) => <article key={film.title} style={{ border: "1px solid #ddd", borderRadius: 12, padding: 18 }}><h3>{film.title}</h3><p>{film.access}</p><strong>{film.price}</strong><br /><button>查看影片</button></article>)}</div></main>; }
+export default function Home() {
+  return (
+    <main style={{ maxWidth: 960, margin: "0 auto", padding: 32, fontFamily: "system-ui" }}>
+      <header>
+        <h1>HANABI</h1>
+        <p>商城与正版影视点播平台</p>
+        <nav><Link href="/cart">购物车</Link>　<Link href="/account">个人中心</Link></nav>
+      </header>
+      <h2>正在热播</h2>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))", gap: 16 }}>
+        {catalogMovies.map((film) => (
+          <article key={film.slug} style={{ border: "1px solid #ddd", borderRadius: 12, padding: 18 }}>
+            <h3>{film.title}</h3>
+            <p>{film.access}</p>
+            <strong>{film.priceCents > 0 ? formatCny(film.priceCents) : film.previewSeconds ? `免费试看 ${film.previewSeconds / 60} 分钟` : "会员可看"}</strong>
+            <p><Link href={`/movies/${film.slug}`}>查看影片</Link></p>
+          </article>
+        ))}
+      </div>
+    </main>
+  );
+}
