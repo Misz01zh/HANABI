@@ -1,10 +1,10 @@
 create type access_type as enum ('free', 'subscription', 'purchase', 'subscription_or_purchase');
 create type order_status as enum ('pending', 'paid', 'refunded', 'failed');
 
-
 create table movies (
   id uuid primary key default gen_random_uuid(),
   title text not null,
+  description text not null default '',
   access access_type not null default 'subscription_or_purchase',
   price_cents integer,
   preview_seconds integer not null default 0,
@@ -12,6 +12,8 @@ create table movies (
   created_at timestamptz not null default now()
 );
 
+alter table movies enable row level security;
+create policy "Public can read movies" on movies for select using (true);
 
 create table orders (
   id uuid primary key default gen_random_uuid(),
@@ -23,7 +25,6 @@ create table orders (
   created_at timestamptz not null default now()
 );
 
-
 create table order_items (
   id uuid primary key default gen_random_uuid(),
   order_id uuid not null references orders(id) on delete cascade,
@@ -33,7 +34,6 @@ create table order_items (
   quantity integer not null default 1 check (quantity > 0),
   unique (order_id, movie_id)
 );
-
 
 create table entitlements (
   id uuid primary key default gen_random_uuid(),
