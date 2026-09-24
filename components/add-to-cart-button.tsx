@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import { addMovieToCart } from "@/lib/cart";
-import type { CatalogMovie } from "@/lib/catalog";
+import type { StorefrontMovie } from "@/lib/movies";
 
-export function AddToCartButton({ movie }: { movie: CatalogMovie }) {
+export function AddToCartButton({ movie }: { movie: StorefrontMovie }) {
   const [message, setMessage] = useState("");
   const canPurchase = movie.priceCents > 0;
 
@@ -14,7 +14,7 @@ export function AddToCartButton({ movie }: { movie: CatalogMovie }) {
   }
 
   if (!canPurchase) {
-    return <p>{movie.access === "会员专享" ? "此片仅对会员开放" : "此片可免费试看"}</p>;
+    return <p>{movie.access === "subscription" ? "此片仅对会员开放" : "此片可免费试看"}</p>;
   }
 
   return (
