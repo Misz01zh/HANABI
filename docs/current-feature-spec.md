@@ -1,4 +1,4 @@
-# HANABI 当前功能式样书（v0.4）
+# HANABI 当前功能式样书（v0.5）
 
 ## 目标
 构建“商城 + 正版影片点播”平台，支持免费、会员可看与单片购买。
@@ -6,7 +6,10 @@
 ## 已实现
 - Next.js 商城首页与影片卡片。
 - 影片权限：`free`、`subscription`、`purchase`、`subscription_or_purchase`。
-- Supabase 邮箱密码登录页：`app/login/page.tsx` 使用 `signInWithPassword`。
+- Supabase 邮箱密码登录页：`app/login/page.tsx` 使用 `signInWithPassword`；登录成功后跳转个人中心。
+- `app/register/page.tsx`：支持邮箱密码注册；当 Supabase 要求邮箱确认时提示用户查收邮件。
+- `app/account/page.tsx`：读取当前 Supabase 用户、未登录时跳转登录页，并提供退出登录。
+- 当前认证方案使用 Supabase 浏览器会话持久化。
 - Stripe、微信支付、支付宝统一支付接口定义。
 - Supabase 影片、订单、观看权益数据表。
 - Cloudflare Stream RS256 签名令牌模块 `lib/stream-token.ts`：按影片 ID 与用户 ID 签发，默认有效期 15 分钟。
@@ -26,7 +29,7 @@
 - Supabase、Stripe、微信支付、支付宝对应凭证。
 
 ## 尚未实现
-- 注册、退出、服务端会话与个人中心。
+- 服务端 Cookie 会话与路由级访问保护。
 - 商品详情、购物车、下单、订单查询。
 - 真实支付、回调、退款与权益回收。
 - Cloudflare Stream 实际上传、播放器接入、试看与播放记录。
