@@ -1,21 +1,19 @@
-# HANABI 当前功能式样书（v0.9）
+# HANABI 当前功能式样书（v1.0）
 
 ## 已实现
-- Supabase 邮箱密码注册、登录、退出与个人中心；当前使用浏览器会话持久化。
-- 首页和影片详情页从 Supabase `movies` 表读取真实影片；影片表支持描述、价格、试看时长和公开只读 RLS。
-- 购物车保存真实影片 UUID；结算页可选择渠道并调用 `POST /api/orders` 创建待支付订单。
-- `POST /api/orders` 使用服务端价格创建 `pending` 订单和 `order_items`。
-- `lib/fulfill-order.ts` 提供仅服务端调用的支付成功履约服务：读取待支付订单、创建购买权益并将订单更新为 `paid`；重复履约会安全返回。
-- `POST /api/playback-token` 验证登录与观看权益后签发 15 分钟 Cloudflare Stream 播放令牌。
+- Supabase 注册、登录、退出和个人中心。
+- Supabase 真实影片目录、公开只读 RLS、影片详情和本地购物车。
+- 结算页可创建待支付订单；订单含服务端价格和订单明细。
+- `lib/fulfill-order.ts` 在支付成功后授予购买权益并将订单标记为 `paid`。
+- `POST /api/payments/webhook`：以 `PAYMENT_WEBHOOK_SECRET` 的 HMAC-SHA256 校验 `x-hanabi-signature`，仅对 `paid: true` 的有效回调执行订单履约。
+- 视频权限校验与 Cloudflare Stream 短时播放令牌。
 
 ## 配置
-部署环境需设置 Supabase、Cloudflare Stream、Stripe、微信支付和支付宝对应凭证；不得提交真实密钥。
+需配置 Supabase、Cloudflare Stream、支付渠道凭证，以及 `PAYMENT_WEBHOOK_SECRET`；不得提交真实密钥。
 
 ## 尚未实现
-- Stripe、微信支付、支付宝的结算跳转、签名验证 Webhook，以及由 Webhook 调用订单履约服务。
-- 服务端 Cookie 会话与路由级访问保护。
-- Cloudflare Stream 实际上传、播放器接入、试看与播放记录。
-- 管理后台、影片上传、RLS 权限策略完善。
+- 将各支付渠道真实回调格式、签名算法与结算跳转适配到统一 Webhook。
+- 服务端 Cookie 会话、Cloudflare Stream 上传和播放器、管理后台与 RLS 完善。
 
 ## 维护规则
-后续每次功能提交后，必须同步更新本式样书的已实现功能、配置和待办事项。
+后续每次功能提交后，必须同步更新本式样书。
