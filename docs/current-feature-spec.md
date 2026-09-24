@@ -1,25 +1,20 @@
-# HANABI 当前功能式样书（v1.1）
+# HANABI 当前功能式样书（v1.2）
 
 ## 已实现
 - Supabase 注册、登录、退出和个人中心。
 - Supabase 真实影片目录、公开只读 RLS、影片详情和本地购物车。
-- 结算页可创建待支付订单；订单含服务端价格和订单明细。
-- 支付成功履约服务会授予购买权益并将订单标记为 `paid`。
+- 结算页可创建待支付订单；支付成功履约服务授予购买权益并更新订单状态。
 - HMAC 校验的统一支付 Webhook 骨架。
-- `POST /api/playback-token` 验证登录与观看权益后签发 15 分钟 Cloudflare Stream 播放令牌。
-- `SecureVideoPlayer` 已接入影片详情页：取得短时令牌后生成受保护的 Cloudflare Stream HLS 地址；影片设置试看时长时会显示提示。
+- 受保护 Cloudflare Stream 播放器：通过短时令牌加载 HLS 视频。
+- `POST /api/playback-progress` 保存登录用户的播放进度；播放器每 15 秒上报一次。
+- `playback_progress` 以用户与影片为联合主键，并使用 RLS 限制用户仅能访问自己的记录。
 
 ## 配置
-需配置 Supabase、Cloudflare Stream、支付渠道凭证，以及：
-- `PAYMENT_WEBHOOK_SECRET`
-- `NEXT_PUBLIC_CLOUDFLARE_STREAM_CUSTOMER_CODE`
-
-不得提交真实密钥。
+需配置 Supabase、Cloudflare Stream、支付渠道凭证、`PAYMENT_WEBHOOK_SECRET` 和 `NEXT_PUBLIC_CLOUDFLARE_STREAM_CUSTOMER_CODE`；不得提交真实密钥。
 
 ## 尚未实现
-- 将各支付渠道真实回调格式、签名算法与结算跳转适配到统一 Webhook。
-- 跨浏览器 HLS 播放器支持，以及服务端强制的试看时长限制。
-- 服务端 Cookie 会话、Cloudflare Stream 实际上传、播放记录、管理后台与 RLS 完善。
+- 支付渠道真实回调适配、服务端 Cookie 会话、跨浏览器 HLS 与服务端试看限制。
+- Cloudflare Stream 上传、播放续播读取、管理后台和 RLS 策略完善。
 
 ## 维护规则
 后续每次功能提交后，必须同步更新本式样书。
