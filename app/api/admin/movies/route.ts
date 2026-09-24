@@ -5,14 +5,14 @@ async function adminClient(request: NextRequest) {
   const token = request.headers.get("authorization")?.replace(/^Bearer\s+/i, "");
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL; const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY; const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!token || !url || !anonKey || !serviceRoleKey) return null;
-  const userClient = createClient(url, anonKey); const { data } = await userClient.auth.getUser(token);
+  const { data } = await createClient(url, anonKey).auth.getUser(token);
   if (data.user?.app_metadata.role !== "admin") return null;
   return createClient(url, serviceRoleKey, { auth: { persistSession: false } });
 }
 
 export async function GET(request: NextRequest) {
   const supabase = await adminClient(request); if (!supabase) return NextResponse.json({ error: "Administrator access is required" }, { status: 403 });
-  const { data, error } = await supabase.from("movies").select("id, title, access, price_cents, stream_video_uid, created_at").order("created_at", { ascending: false });
+  const { data, error } = await supabase.from("movies").select("id, title, description, access, price_cents, preview_seconds, stream_video_uid, created_at").order("created_at", { ascending: false });
   return error ? NextResponse.json({ error: "Could not load movies" }, { status: 500 }) : NextResponse.json({ movies: data });
 }
 
