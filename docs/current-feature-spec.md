@@ -1,12 +1,13 @@
-# HANABI 当前功能式样书（v1.8）
+# HANABI 当前功能式样书（v1.9）
 
 ## 已实现
 - Supabase 注册、登录、退出和个人中心。
 - 真实影片目录、影片详情、HTTPS 海报、本地购物车、订单与支付履约骨架。
 - Cloudflare Stream 短时令牌、受保护播放、播放进度保存和自动续播。
 - 管理后台可列出、创建和编辑影片及海报 URL。
-- `tsconfig.json` 配置 `@/*` 根目录路径别名；`next-env.d.ts` 提供 Next.js TypeScript 类型声明。
-- `docs/deployment-guide.md` 提供完整部署启动指南；`docs/troubleshooting.md` 记录 PowerShell npm、路径别名和环境变量故障处理。
+- TypeScript 配置支持 `@/*` 根目录路径别名，并包含 Next.js 类型声明。
+- 订单创建接口使用 TypeScript 类型守卫验证影片价格为非空正整数，再计算金额和写入订单明细。
+- 部署启动指南与常见启动故障排查文档。
 
 ## 配置
 部署所需变量以 `.env.example` 为准；服务端密钥不得提交或暴露给浏览器。
