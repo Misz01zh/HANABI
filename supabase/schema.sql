@@ -2,10 +2,20 @@ create type access_type as enum ('free', 'subscription', 'purchase', 'subscripti
 create type order_status as enum ('pending', 'paid', 'refunded', 'failed');
 
 create table movies (
-  id uuid primary key default gen_random_uuid(), title text not null, description text not null default '', poster_url text, access access_type not null default 'subscription_or_purchase', price_cents integer, preview_seconds integer not null default 0, stream_video_uid text unique, created_at timestamptz not null default now()
+  id uuid primary key default gen_random_uuid(),
+  title text not null,
+  description text not null default '',
+  poster_url text,
+  access access_type not null default 'subscription_or_purchase',
+  price_cents integer,
+  preview_seconds integer not null default 0,
+  stream_video_uid text unique,
+  status text not null default 'draft' check (status in ('draft', 'published', 'archived')),
+  deleted_at timestamptz,
+  created_at timestamptz not null default now()
 );
 alter table movies enable row level security;
-create policy "Public can read movies" on movies for select using (true);
+create policy "Public can read published movies" on movies for select using (status = 'published' and deleted_at is null);
 
 create table orders (
   id uuid primary key default gen_random_uuid(), user_id uuid not null references auth.users(id), status order_status not null default 'pending', provider text not null, amount_cents integer not null, currency text not null default 'CNY', created_at timestamptz not null default now()
