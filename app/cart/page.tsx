@@ -1,40 +1,5 @@
 "use client";
-
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { formatCny, getCart, removeFromCart, type CartItem } from "@/lib/cart";
-
-export default function CartPage() {
-  const [items, setItems] = useState<CartItem[]>([]);
-
-  useEffect(() => setItems(getCart()), []);
-
-  const total = items.reduce((sum, item) => sum + item.priceCents * item.quantity, 0);
-
-  function removeItem(id: string) {
-    setItems(removeFromCart(id));
-  }
-
-  return (
-    <main style={{ maxWidth: 720, margin: "0 auto", padding: 32, fontFamily: "system-ui" }}>
-      <p><Link href="/">← 继续购物</Link></p>
-      <h1>购物车</h1>
-      {items.length === 0 ? (
-        <p>购物车为空。</p>
-      ) : (
-        <>
-          <ul>
-            {items.map((item) => (
-              <li key={item.id}>
-                {item.title} · {formatCny(item.priceCents)}
-                <button type="button" onClick={() => removeItem(item.id)}>移除</button>
-              </li>
-            ))}
-          </ul>
-          <p><strong>合计：{formatCny(total)}</strong></p>
-          <Link href="/checkout">去结算</Link>
-        </>
-      )}
-    </main>
-  );
-}
+import { formatCny, getCart, removeFromCart, setCartQuantity, type CartItem } from "@/lib/cart";
+export default function CartPage(){const[items,setItems]=useState<CartItem[]>([]);useEffect(()=>setItems(getCart()),[]);const total=items.reduce((sum,item)=>sum+item.priceCents*item.quantity,0);return <main style={{maxWidth:820}}><p><Link href="/shop">← 继续选购商品</Link></p><h1>商品购物车</h1>{items.length===0?<p>购物车为空，影片不会进入购物车。</p>:<><ul>{items.map(item=><li key={item.id} style={{display:"grid",gridTemplateColumns:"1fr auto auto",alignItems:"center",gap:12}}><span>{item.name} · {formatCny(item.priceCents)}</span><label>数量 <input aria-label={`${item.name}数量`} type="number" min="1" max={item.stock} value={item.quantity} onChange={event=>setItems(setCartQuantity(item.id,Number(event.target.value)))}/></label><button type="button" onClick={()=>setItems(removeFromCart(item.id))}>移除</button></li>)}</ul><p><strong>合计：{formatCny(total)}</strong></p><p><Link href="/checkout">去结算</Link></p></>}</main>;}
