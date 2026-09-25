@@ -4,12 +4,14 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const storefrontItems = [
-  { href: "/", label: "首页" },
+  { href: "/", label: "影片" },
+  { href: "/shop", label: "商城" },
   { href: "/cart", label: "购物车" },
   { href: "/account", label: "个人中心" },
 ];
 const adminItems = [
   { href: "/admin/movies", label: "影片管理" },
+  { href: "/admin/products", label: "商品管理" },
 ];
 
 export function SiteHeader() {
