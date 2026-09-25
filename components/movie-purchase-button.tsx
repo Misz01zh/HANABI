@@ -1,0 +1,5 @@
+"use client";
+import { useState } from "react";
+import { createClient } from "@supabase/supabase-js";
+const supabase=createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!,process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
+export function MoviePurchaseButton({movieId,disabled}:{movieId:string;disabled?:boolean}){const[message,setMessage]=useState("");const[loading,setLoading]=useState(false);async function purchase(){setLoading(true);setMessage("");const{data}=await supabase.auth.getSession();if(!data.session){setMessage("请先登录后购买影片。");setLoading(false);return;}const response=await fetch("/api/orders",{method:"POST",headers:{"Content-Type":"application/json",Authorization:`Bearer ${data.session.access_token}`},body:JSON.stringify({movieIds:[movieId],provider:"stripe"})});const result=await response.json();setMessage(response.ok?`影片订单已创建：${result.orderId}`:result.error);setLoading(false);}return <div><button type="button" disabled={disabled||loading} onClick={()=>void purchase()}>{loading?"创建订单中…":"立即购买影片"}</button>{message&&<p aria-live="polite">{message}</p>}</div>;}
