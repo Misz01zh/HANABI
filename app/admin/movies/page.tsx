@@ -48,7 +48,7 @@ export default function AdminMoviesPage() {
   }
   const fields = (movie?:Movie) => <div className="admin-fields">
     <label><span>影片标题</span><input name="title" defaultValue={movie?.title} placeholder="例如：花火大会" required /></label>
-    <label><span>影片简介</span><input name="description" defaultValue={movie?.description} placeholder="简要介绍影片内容" /></label>
+    <label className="admin-field-wide"><span>影片简介</span><input name="description" defaultValue={movie?.description} placeholder="简要介绍影片内容" /></label>
     <label><span>海报地址</span><input name="posterUrl" type="url" defaultValue={movie?.poster_url ?? ""} placeholder="https://..." /></label>
     <label><span>观看权限</span><select name="access" defaultValue={movie?.access ?? "purchase"}><option value="purchase">单片购买</option><option value="subscription">会员专享</option><option value="subscription_or_purchase">会员或单片购买</option><option value="free">免费</option></select></label>
     <label><span>发布状态</span><select name="status" defaultValue={movie?.status ?? "draft"}><option value="draft">草稿</option><option value="published">已发布</option><option value="archived">已归档</option></select></label>
