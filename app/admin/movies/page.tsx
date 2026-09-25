@@ -21,7 +21,9 @@ export default function AdminMoviesPage() {
   useEffect(() => { void load(); }, [load]);
 
   function values(form:FormData) {
-    return { title:form.get("title"), description:form.get("description"), posterUrl:form.get("posterUrl"), access:form.get("access"), priceCents:Number(form.get("priceCents")) || 0, previewSeconds:Number(form.get("previewSeconds")) || 0, streamVideoUid:form.get("streamVideoUid"), status:form.get("status") };
+    const priceYuan = Number(form.get("priceYuan"));
+    const previewMinutes = Number(form.get("previewMinutes"));
+    return { title:form.get("title"), description:form.get("description"), posterUrl:form.get("posterUrl"), access:form.get("access"), priceCents:Number.isFinite(priceYuan) ? Math.round(priceYuan * 100) : 0, previewSeconds:Number.isFinite(previewMinutes) ? Math.round(previewMinutes * 60) : 0, streamVideoUid:form.get("streamVideoUid"), status:form.get("status") };
   }
   async function create(event:FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -44,16 +46,16 @@ export default function AdminMoviesPage() {
     setMessage(response.ok ? "影片已归档，可通过修改状态恢复" : result.error);
     if (response.ok) await load();
   }
-  const fields = (movie?:Movie) => <>
-    <input name="title" defaultValue={movie?.title} placeholder="影片标题" required />
-    <input name="description" defaultValue={movie?.description} placeholder="简介" />
-    <input name="posterUrl" type="url" defaultValue={movie?.poster_url ?? ""} placeholder="HTTPS 海报 URL" />
-    <select name="access" defaultValue={movie?.access ?? "purchase"}><option value="purchase">单片购买</option><option value="subscription">会员专享</option><option value="subscription_or_purchase">会员或单片购买</option><option value="free">免费</option></select>
-    <select name="status" defaultValue={movie?.status ?? "draft"}><option value="draft">草稿</option><option value="published">已发布</option><option value="archived">已归档</option></select>
-    <input name="priceCents" type="number" min="0" defaultValue={movie?.price_cents ?? 0} />
-    <input name="previewSeconds" type="number" min="0" defaultValue={movie?.preview_seconds ?? 0} />
-    <input name="streamVideoUid" defaultValue={movie?.stream_video_uid ?? ""} placeholder="Stream UID" />
-  </>;
+  const fields = (movie?:Movie) => <div className="admin-fields">
+    <label><span>影片标题</span><input name="title" defaultValue={movie?.title} placeholder="例如：花火大会" required /></label>
+    <label><span>影片简介</span><input name="description" defaultValue={movie?.description} placeholder="简要介绍影片内容" /></label>
+    <label><span>海报地址</span><input name="posterUrl" type="url" defaultValue={movie?.poster_url ?? ""} placeholder="https://..." /></label>
+    <label><span>观看权限</span><select name="access" defaultValue={movie?.access ?? "purchase"}><option value="purchase">单片购买</option><option value="subscription">会员专享</option><option value="subscription_or_purchase">会员或单片购买</option><option value="free">免费</option></select></label>
+    <label><span>发布状态</span><select name="status" defaultValue={movie?.status ?? "draft"}><option value="draft">草稿</option><option value="published">已发布</option><option value="archived">已归档</option></select></label>
+    <label><span>价格（元）</span><input name="priceYuan" type="number" min="0" step="0.01" defaultValue={(movie?.price_cents ?? 0) / 100} placeholder="例如：9.90" /></label>
+    <label><span>试看时长（分钟）</span><input name="previewMinutes" type="number" min="0" step="0.1" defaultValue={(movie?.preview_seconds ?? 0) / 60} placeholder="例如：5" /></label>
+    <label><span>Cloudflare Stream UID</span><input name="streamVideoUid" defaultValue={movie?.stream_video_uid ?? ""} placeholder="视频 Stream UID" /></label>
+  </div>;
 
-  return <main><h1>影片管理</h1><h2>创建影片</h2><form onSubmit={create}>{fields()}<button>创建影片</button></form><p aria-live="polite">{message}</p><h2>编辑影片</h2>{movies.map(movie => <form key={movie.id} onSubmit={event => update(event, movie.id)}>{fields(movie)}<span>{movie.deleted_at ? "已软删除" : movie.status}</span><button>保存修改</button><button type="button" disabled={movie.status === "archived"} onClick={() => void archive(movie.id)}>下架并删除</button></form>)}</main>;
+  return <main><h1>影片管理</h1><h2>创建影片</h2><form onSubmit={create}>{fields()}<button>创建影片</button></form><p aria-live="polite">{message}</p><h2>编辑影片</h2>{movies.map(movie => <form key={movie.id} onSubmit={event => update(event, movie.id)}>{fields(movie)}<p>当前状态：{movie.deleted_at ? "已软删除" : movie.status}</p><button>保存修改</button><button type="button" disabled={movie.status === "archived"} onClick={() => void archive(movie.id)}>下架并删除</button></form>)}</main>;
 }
