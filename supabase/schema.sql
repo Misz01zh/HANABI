@@ -4,7 +4,9 @@ create type order_status as enum ('pending', 'paid', 'refunded', 'failed');
 create table movies (
   id uuid primary key default gen_random_uuid(), title text not null, description text not null default '', poster_url text,
   access access_type not null default 'subscription_or_purchase', price_cents integer, preview_seconds integer not null default 0,
-  stream_video_uid text unique, status text not null default 'draft' check (status in ('draft','published','archived')),
+  video_source text not null default 'cloudflare_stream' check (video_source in ('cloudflare_stream','supabase_storage')),
+  stream_video_uid text unique, storage_bucket text, storage_path text,
+  status text not null default 'draft' check (status in ('draft','published','archived')),
   deleted_at timestamptz, created_at timestamptz not null default now()
 );
 alter table movies enable row level security;
