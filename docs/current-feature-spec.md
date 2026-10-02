@@ -1,4 +1,4 @@
-# HANABI 当前功能式样书（v3.2）
+# HANABI 当前功能式样书（v3.3）
 
 ## 1. 项目定位
 HANABI 是基于 Next.js、TypeScript、Supabase 与 Cloudflare Stream 的商城及正版影视平台。影片购买与实体商品购物流程彼此独立。
@@ -16,6 +16,7 @@ HANABI 是基于 Next.js、TypeScript、Supabase 与 Cloudflare Stream 的商城
 
 ## 4. 影片功能
 - 首页仅展示已发布且未软删除的影片。
+- “正在热播”采用 YouTube 风格紧凑卡片网格，单卡宽度约 240–300px，缩略图比例为 16:9，影片数量少时不会拉伸占满整行。
 - 支持免费、会员、单片购买、会员或购买四种观看策略。
 - 付费影片在详情页直接创建单片订单，不进入购物车。
 - 支持免费试看、播放授权、Cloudflare Stream 签名播放、进度保存和断点续播。
