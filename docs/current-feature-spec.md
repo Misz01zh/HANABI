@@ -1,4 +1,4 @@
-# HANABI 当前功能式样书（v3.6）
+# HANABI 当前功能式样书（v3.7）
 
 
 ## 1. 项目定位
@@ -25,7 +25,8 @@ HANABI 是基于 Next.js、TypeScript、Supabase 与 Cloudflare Stream 的商城
 - “正在热播”采用 YouTube 风格紧凑卡片网格，单卡宽度约 240–300px，缩略图比例为 16:9，影片数量少时不会拉伸占满整行。
 - 支持免费、会员、单片购买、会员或购买四种观看策略。
 - 付费影片在详情页直接创建单片订单，不进入购物车。
-- 支持免费试看、播放授权、Cloudflare Stream 签名播放、进度保存和断点续播。
+- 支持免费试看、播放授权、进度保存和断点续播。
+- 视频来源支持 Cloudflare Stream 与 Supabase Storage 私有桶；播放接口根据来源签发 Stream Token 或 Storage 临时签名 URL。
 - 影片后台支持创建、编辑、草稿、发布、归档和可恢复软删除。
 
 
@@ -57,17 +58,19 @@ HANABI 是基于 Next.js、TypeScript、Supabase 与 Cloudflare Stream 的商城
 - 全新环境执行 `supabase/schema.sql`。
 - 已有影片环境先执行 `docs/soft-delete-migration.md`。
 - 新增商城功能执行 `docs/commerce-migration.md`。
+- 已有影片环境启用双视频来源执行 `docs/video-source-migration.md`。
 
 
 ## 9. 管理界面
 - 影片表单显示明确标签，价格以元、试看时长以分钟输入并自动换算。
+- 影片表单可选择 Cloudflare Stream 或 Supabase Storage，并分别配置 Stream UID 或私有桶及文件路径。
 - 影片表单采用四/三/二/一列响应式布局，简介独占整行，操作按钮居中。
 - 商品表单采用响应式布局，简介独占整行，创建、保存和软删除按钮居中。
 - 影片管理和商品管理的右侧内容区不重复显示页面级大标题，直接进入创建与编辑区域。
 
 
 ## 10. 尚未实装
-- Cloudflare Stream 视频上传和物理删除。
+- 后台直接上传视频到 Cloudflare Stream 或 Supabase Storage，以及视频物理删除。
 - 各支付平台官方 SDK 的完整生产签名、退款和对账流程。
 - 收货地址、物流、运费模板、优惠券和发票。
 - 商品多规格 SKU、库存事务锁和超时订单库存释放。
