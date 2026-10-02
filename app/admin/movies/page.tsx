@@ -5,7 +5,7 @@ import { createClient } from "@supabase/supabase-js";
 import { AccountShell } from "@/components/account-shell";
 
 const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
-type Movie = { id:string; title:string; description:string; poster_url:string|null; access:string; price_cents:number|null; preview_seconds:number; stream_video_uid:string|null; status:"draft"|"published"|"archived"; deleted_at:string|null };
+type Movie = { id:string; title:string; description:string; poster_url:string|null; access:string; price_cents:number|null; preview_seconds:number; stream_video_uid:string|null; status:"draft"|"published"|"archived"; deleted_at:string|null; video_source:"cloudflare_stream"|"supabase_storage"; storage_bucket:string|null; storage_path:string|null };
 
 export default function AdminMoviesPage() {
   const [movies, setMovies] = useState<Movie[]>([]);
@@ -24,7 +24,7 @@ export default function AdminMoviesPage() {
   function values(form:FormData) {
     const priceYuan = Number(form.get("priceYuan"));
     const previewMinutes = Number(form.get("previewMinutes"));
-    return { title:form.get("title"), description:form.get("description"), posterUrl:form.get("posterUrl"), access:form.get("access"), priceCents:Number.isFinite(priceYuan) ? Math.round(priceYuan * 100) : 0, previewSeconds:Number.isFinite(previewMinutes) ? Math.round(previewMinutes * 60) : 0, streamVideoUid:form.get("streamVideoUid"), status:form.get("status") };
+    return { title:form.get("title"), description:form.get("description"), posterUrl:form.get("posterUrl"), access:form.get("access"), priceCents:Number.isFinite(priceYuan) ? Math.round(priceYuan * 100) : 0, previewSeconds:Number.isFinite(previewMinutes) ? Math.round(previewMinutes * 60) : 0, videoSource:form.get("videoSource"), streamVideoUid:form.get("streamVideoUid"), storageBucket:form.get("storageBucket"), storagePath:form.get("storagePath"), status:form.get("status") };
   }
   async function create(event:FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -55,7 +55,10 @@ export default function AdminMoviesPage() {
     <label><span>发布状态</span><select name="status" defaultValue={movie?.status ?? "draft"}><option value="draft">草稿</option><option value="published">已发布</option><option value="archived">已归档</option></select></label>
     <label><span>价格（元）</span><input name="priceYuan" type="number" min="0" step="0.01" defaultValue={(movie?.price_cents ?? 0) / 100} placeholder="例如：9.90" /></label>
     <label><span>试看时长（分钟）</span><input name="previewMinutes" type="number" min="0" step="0.1" defaultValue={(movie?.preview_seconds ?? 0) / 60} placeholder="例如：5" /></label>
-    <label><span>Cloudflare Stream UID</span><input name="streamVideoUid" defaultValue={movie?.stream_video_uid ?? ""} placeholder="视频 Stream UID" /></label>
+    <label><span>视频来源</span><select name="videoSource" defaultValue={movie?.video_source ?? "cloudflare_stream"}><option value="cloudflare_stream">Cloudflare Stream</option><option value="supabase_storage">Supabase Storage</option></select></label>
+    <label><span>Cloudflare Stream UID</span><input name="streamVideoUid" defaultValue={movie?.stream_video_uid ?? ""} placeholder="Cloudflare 视频 UID" /></label>
+    <label><span>Supabase 存储桶</span><input name="storageBucket" defaultValue={movie?.storage_bucket ?? ""} placeholder="例如：movies" /></label>
+    <label><span>Supabase 文件路径</span><input name="storagePath" defaultValue={movie?.storage_path ?? ""} placeholder="例如：features/hanabi.mp4" /></label>
   </div>;
 
   return <AccountShell><style jsx global>{`.admin-fields{grid-column:1/-1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem;margin-bottom:1rem}.admin-fields label{display:grid;gap:.45rem;min-width:0}.admin-fields label>span{color:#b3b3b3;font-size:.9rem;font-weight:600}.admin-fields input,.admin-fields select{width:100%}.admin-field-wide{grid-column:1/-1}.admin-actions{grid-column:1/-1;display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:.75rem}@media(max-width:1100px){.admin-fields{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:850px){.admin-fields{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:600px){.admin-fields{grid-template-columns:1fr}.admin-field-wide{grid-column:auto}}`}</style><h2>创建影片</h2><form onSubmit={create}>{fields()}<div className="admin-actions"><button>创建影片</button></div></form><p aria-live="polite">{message}</p><h2>编辑影片</h2>{movies.map(movie => <form key={movie.id} onSubmit={event => update(event, movie.id)}>{fields(movie)}<p>当前状态：{movie.deleted_at ? "已软删除" : movie.status}</p><div className="admin-actions"><button>保存修改</button><button type="button" disabled={movie.status === "archived"} onClick={() => void archive(movie.id)}>下架并删除</button></div></form>)}</AccountShell>;
