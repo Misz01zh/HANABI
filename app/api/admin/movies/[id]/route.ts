@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 const accessTypes = ["free", "subscription", "purchase", "subscription_or_purchase"];
 const movieStatuses = ["draft", "published", "archived"];
+const videoSources = ["cloudflare_stream", "supabase_storage"];
 
 function isHttpsUrl(value: string) {
   try { return new URL(value).protocol === "https:"; } catch { return false; }
@@ -31,7 +32,10 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
   if (typeof body.access === "string" && accessTypes.includes(body.access)) update.access = body.access;
   if (Number.isInteger(body.priceCents) && body.priceCents >= 0) update.price_cents = body.priceCents;
   if (Number.isInteger(body.previewSeconds) && body.previewSeconds >= 0) update.preview_seconds = body.previewSeconds;
-  if (typeof body.streamVideoUid === "string") update.stream_video_uid = body.streamVideoUid || null;
+  if (typeof body.videoSource === "string" && videoSources.includes(body.videoSource)) update.video_source = body.videoSource;
+  if (typeof body.streamVideoUid === "string") update.stream_video_uid = body.streamVideoUid.trim() || null;
+  if (typeof body.storageBucket === "string") update.storage_bucket = body.storageBucket.trim() || null;
+  if (typeof body.storagePath === "string") update.storage_path = body.storagePath.trim() || null;
   if (typeof body.status === "string" && movieStatuses.includes(body.status)) {
     update.status = body.status;
     update.deleted_at = body.status === "archived" ? new Date().toISOString() : null;
