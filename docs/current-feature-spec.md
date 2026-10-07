@@ -1,4 +1,4 @@
-# HANABI 当前功能式样书（v3.9）
+# HANABI 当前功能式样书（v4.0）
 
 ## 1. 项目定位
 HANABI 是基于 Next.js、TypeScript、Supabase 与 Cloudflare Stream 的商城及正版影视平台。影片购买与实体商品购物流程彼此独立。
@@ -16,9 +16,10 @@ HANABI 是基于 Next.js、TypeScript、Supabase 与 Cloudflare Stream 的商城
 ## 4. 影片功能
 - 首页仅展示已发布且未软删除的影片。
 - 首页采用参考 YouTube 的深色侧栏、顶部搜索、分类筛选和 16:9 影片卡片网格。
+- 主页保持服务端组件，样式集中在 `app/globals.css`，不从服务端页面导入仅限客户端的 `styled-jsx`。
 - 支持按标题或简介搜索，并按免费、会员、单片购买、会员或购买筛选。
 - 登录用户可收藏或取消收藏影片，`/favorites` 展示个人收藏；未登录点击收藏跳转登录。
-- 浏览器端 Supabase 客户端由 `lib/supabase-browser.ts` 统一创建，在环境变量缺失或 URL 无效时安全返回空值。
+- 浏览器端 Supabase 客户端由 `lib/supabase-browser.ts` 统一创建。
 - 支持免费、会员、单片购买、会员或购买四种观看策略。
 - 付费影片直接创建单片订单，不进入购物车。
 - 支持免费试看、播放授权、进度保存和断点续播。
