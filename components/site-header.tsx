@@ -1,35 +1,7 @@
 "use client";
-
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-
-const navigationItems = [
-  { href: "/", label: "影片" },
-  { href: "/shop", label: "商城" },
-  { href: "/account", label: "个人中心" },
-];
-
-export function SiteHeader() {
-  const pathname = usePathname();
-  const active = (href: string) => href === "/" ? pathname === "/" : pathname.startsWith(href);
-  return <>
-    <header className="site-header">
-      <div className="site-header-inner">
-        <Link className="site-brand" href="/" aria-label="HANABI 首页"><span className="site-brand-mark">H</span><strong>HANABI</strong></Link>
-        <nav className="site-nav" aria-label="全站导航">
-          {navigationItems.map(item => <Link key={item.href} href={item.href} aria-current={active(item.href) ? "page" : undefined}>{item.label}</Link>)}
-        </nav>
-      </div>
-    </header>
-    <style jsx>{`
-      .site-header{position:sticky;top:0;z-index:100;border-bottom:1px solid #303030;background:rgb(15 15 15 / 92%);backdrop-filter:blur(14px)}
-      .site-header-inner{width:min(100% - 32px,1180px);min-height:68px;margin:0 auto;display:flex;align-items:center;gap:28px}
-      .site-brand{display:inline-flex;align-items:center;gap:10px;color:#fff;text-decoration:none;white-space:nowrap;letter-spacing:.04em}
-      .site-brand-mark{display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:#ff0033;color:#fff;font-weight:900}
-      .site-nav{display:flex;align-items:center;gap:6px;min-width:0;overflow-x:auto;scrollbar-width:none;white-space:nowrap}
-      .site-nav::-webkit-scrollbar{display:none}.site-nav a{display:inline-flex;align-items:center;min-height:40px;padding:0 14px;border-radius:999px;color:#d4d4d4;text-decoration:none;font-weight:650}
-      .site-nav a:hover{background:#242424;color:#fff}.site-nav a[aria-current="page"]{background:#fff;color:#0f0f0f}
-      @media(max-width:700px){.site-header-inner{width:100%;min-height:60px;padding:0 12px;gap:14px}.site-brand strong{display:none}.site-nav a{min-height:36px;padding:0 11px;font-size:.9rem}}
-    `}</style>
-  </>;
-}
+const navigationItems=[{href:"/",label:"影片"},{href:"/shop",label:"商城"},{href:"/favorites",label:"收藏"},{href:"/account",label:"个人中心"}];
+export function SiteHeader(){const pathname=usePathname();const active=(href:string)=>href==="/"?pathname==="/":pathname.startsWith(href);return <><header className="site-header"><div className="site-header-inner"><Link className="site-brand" href="/" aria-label="HANABI 首页"><span className="site-brand-mark">H</span><strong>HANABI</strong></Link><form className="site-search" action="/" method="get"><input name="q" placeholder="搜索影片" aria-label="搜索影片"/><button type="submit" aria-label="搜索">⌕</button></form><nav className="site-nav" aria-label="全站导航">{navigationItems.map(item=><Link key={item.href} href={item.href} aria-current={active(item.href)?"page":undefined}>{item.label}</Link>)}</nav></div></header><style jsx>{`
+.site-header{position:sticky;top:0;z-index:100;border-bottom:1px solid #303030;background:rgb(15 15 15/94%);backdrop-filter:blur(14px)}.site-header-inner{width:min(100% - 32px,1700px);min-height:68px;margin:0 auto;display:flex;align-items:center;gap:24px}.site-brand{display:inline-flex;align-items:center;gap:10px;color:#fff;text-decoration:none;white-space:nowrap;letter-spacing:.04em}.site-brand-mark{display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:#ff0033;color:#fff;font-weight:900}.site-search{flex:1;display:flex!important;max-width:650px;margin:0 auto!important;padding:0!important;border:1px solid #303030!important;border-radius:999px!important;background:#121212!important;overflow:hidden;box-shadow:none!important}.site-search input{flex:1;min-width:0;height:44px;padding:0 18px;border:0!important;background:transparent!important;color:#fff;outline:0}.site-search button{width:58px!important;min-height:44px!important;padding:0!important;border:0!important;border-left:1px solid #303030!important;border-radius:0!important;background:#222!important;color:#fff!important;font-size:1.4rem!important;box-shadow:none!important}.site-nav{display:flex;align-items:center;gap:5px;min-width:0;overflow-x:auto;scrollbar-width:none;white-space:nowrap}.site-nav::-webkit-scrollbar{display:none}.site-nav a{display:inline-flex;align-items:center;min-height:40px;padding:0 12px;border-radius:999px;color:#d4d4d4;text-decoration:none;font-weight:650}.site-nav a:hover{background:#242424;color:#fff}.site-nav a[aria-current="page"]{background:#fff;color:#0f0f0f}@media(max-width:900px){.site-nav a:not([aria-current="page"]){display:none}}@media(max-width:700px){.site-header-inner{width:100%;min-height:60px;padding:0 12px;gap:10px}.site-brand strong{display:none}.site-search{max-width:none}.site-nav a{min-height:36px;padding:0 10px;font-size:.86rem}}
+`}</style></>;}
